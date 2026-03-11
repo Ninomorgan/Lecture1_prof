@@ -93,6 +93,13 @@ class ProdottoRecord:
     name: str
     prezzo_unitario: float
 
+    #lo dobbaiamo renderlo HASHABLE
+    def __hash__(self):
+        return hash((self.name, self.prezzo_unitario)) #tubla con argomenti
+
+    def __str__(self):
+        return f"{self.name} - prezzo unitario {self.prezzo_unitario}"
+
 MAX_QUANTITA = 1000
 
 def crea_prodotto_standard(nome: str, prezzo: float):
