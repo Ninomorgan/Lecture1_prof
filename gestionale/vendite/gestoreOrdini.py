@@ -56,6 +56,13 @@ class GestoreOrdini:
             print(f"Ordine correttamente processato")
             return True
 
+    def crea_ordine (self , nomeP, prezzoP, quantita, nomeC, mailC, categoriaC):
+
+        return Ordine([RigaOrdine(ProdottoRecord(nomeP, prezzoP), quantita)],
+                      ClienteRecord(nomeC, mailC, categoriaC))
+    #ci restituisce la o che ci serviva
+
+
     def gestisci_tutti_ordini(self):
         """ Processa tutti gli ordini presenti in coda"""
         print("\n" + "=" * 60)
