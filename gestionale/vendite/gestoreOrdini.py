@@ -34,7 +34,7 @@ class GestoreOrdini:
         #vediamo se ci sono ordini da prcessare
         if not self._ordini_da_processare:
             print ("non ci sono ordini da processare")
-            return False
+            return False, Ordine([], ClienteRecord("","",""))
 
         #se esiste lo procssiamo e poi aggiornimao le statisitche
         ordine = self._ordini_da_processare.popleft()
@@ -54,7 +54,7 @@ class GestoreOrdini:
             self._ordini_processati.append(ordine)
 
             print(f"Ordine correttamente processato")
-            return True
+            return True, ordine
 
     def crea_ordine (self , nomeP, prezzoP, quantita, nomeC, mailC, categoriaC):
 
@@ -67,9 +67,12 @@ class GestoreOrdini:
         """ Processa tutti gli ordini presenti in coda"""
         print("\n" + "=" * 60)
         print(f"processando tutti gli {len(self._ordini_da_processare)} ordini")
+        ordini=[]
         while self._ordini_da_processare:
-            self.processa_prossimo_ordine()
+            _, ordine= self.processa_prossimo_ordine()
+            ordini.append(ordine)
         print("tutti gli ordini sono stati processati.")
+        return ordini
 
     """ Metodo per stampare caratt. ordine"""
 
@@ -108,6 +111,21 @@ class GestoreOrdini:
         for cat, fatt in self.get_distribuzione_categoria():
             print(f"Categoria: {cat} fatturato: {fatt}")
 
+    def get_riepilogo(self):
+        riepilogo = ""
+        riepilogo+=("\n"+"="*60)
+
+        riepilogo+=(f"\nOrdini correttamente gestiti: {len(self._ordini_processati)}")
+        riepilogo+=(f"\nOrdini in coda: {len(self._ordini_da_processare)}")
+        riepilogo+=("\nPRODOTTI PIU' VENDUTI")
+
+        for prod, quantita in self.get_statistiche_prodotti():
+            riepilogo +=(f"\nProdotto: {prod} quantita: {quantita}")
+
+        riepilogo+=(f"\nfatturato per categorie")
+        for cat, fatt in self.get_distribuzione_categoria():
+            riepilogo+=(f"\nCategoria: {cat} fatturato: {fatt}")
+        return riepilogo
 def test_modulo():
     sistema= GestoreOrdini()
 

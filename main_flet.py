@@ -5,7 +5,7 @@ già impostato
 import flet as ft
 
 from gestionale.controller import Controller
-from gestionale.view import View
+from UI.view import View
 
 
 def main(page: ft.Page): #dobbiamo crrea un oggetto di tipo controllr e view
