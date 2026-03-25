@@ -6,10 +6,12 @@ creiamo un software che :
 3) fornire statistiche per cliente
 """
 from collections import deque, Counter, defaultdict
+from random import random
 
 from mysql.connector.constants import flag_is_set
 
-from gestionale.core.clienti import ClienteRecord
+from DAO.dao import DAO
+from gestionale.core.cliente import ClienteRecord
 from gestionale.core.prodotti import ProdottoRecord
 from gestionale.vendite.ordini import Ordine, RigaOrdine
 
@@ -20,6 +22,23 @@ class GestoreOrdini:
         self._ordini_processati= []
         self._statistiche_prodotti= Counter() #importiamo counter per contatore
         self._statistiche_categoria = defaultdict(list)
+        self._allP=[]
+        self._allC = []
+        self._dao= DAO()
+        self._fill_data()
+
+    def _fill_data(self):
+        #leggo prodotti e clienti da db
+        self._allP.extend(self._dao.getAllProdotti()) #se ho qualcosa aggiugo i nuovi
+        self._allC= self._dao.getAllClienti()
+
+        for i in range(10):
+            indexP=random.randint(0,len(self._allP)-1)
+            indexC= random.randint(0,len(self._allC)-1)
+            ordine= Ordine([RigaOrdine(self._allP[indexP],  random.randint(1,5))],
+                           self._allC[indexC])
+            self.add_ordine(ordine)
+
 
     #metodo per aggiungere prodotti
     def add_ordine(self, ordine:Ordine):
