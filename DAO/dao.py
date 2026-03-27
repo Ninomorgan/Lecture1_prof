@@ -2,6 +2,7 @@ import mysql.connector
 
 from gestionale.core.cliente import ClienteRecord
 from gestionale.core.prodotto import ProdottoRecord
+from gestionale.vendite.provaCollections import cliente
 
 
 class DAO:
@@ -71,8 +72,8 @@ class DAO:
             database="sw_gestionale",
         )
         cursor = cnx.cursor()
-        query = "INSERT INTO cliente (nome, mail, categoria) VALUES (%s, %s, %)"
-        cursor.execute(query, (cliente["nome"], cliente["mail"], cliente["categoria"]))
+        query = "INSERT INTO cliente (nome, mail, categoria) VALUES (%s, %s, %s)"
+        cursor.execute(query, (cliente.nome, cliente.email, cliente.categoria))
         cnx.commit()
         cursor.close()
         cnx.close()

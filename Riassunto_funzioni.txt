@@ -1,0 +1,226 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""
+METODO COUNTER
+"""""""""""""""""""""""""""""""""""""""""""""""""
+Classe di collections, Serve per contare frequenze, È un dizionario speciale
+
+1) esempio
+
+c = Counter("banana")
+# {'b':1, 'a':3, 'n':2}
+print(c.most_common(4))     stampa i 4 più ripetuti
+oppure c.total()             mi da il totale di tutti i count
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+UTILIZZO DI QUEUES
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+Struttura dati FIFO (First In First Out), Il primo elemento inserito è il primo ad uscire
+
+1) esempio
+
+d=deque()
+
+q = deque(["Mario", "Luca", "Anna"])
+aggiungo con q.append("nino")
+while q:
+    cliente = q.popleft()   --> mi da il primo
+    print("Servito:", cliente)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+ IMPORT FLET
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+per creare un interfaccia grafica abbiamo bisogno di più classi: view, controller, model, main
+
+1) STRUTTURA
+Model → contiene i dati e la logica di business
+View → si occupa dell’interfaccia utente (Flet)
+Controller → coordina View e Model, gestisce eventi
+
+2) MODEL
+Definisce i dati e i metodi per manipolarli
+
+class ClientiModel:
+    def __init__(self):
+        self.clienti = []
+
+    def aggiungi_cliente(self, nome, email):
+        cliente = Cliente(nome, email)
+        self.clienti.append(cliente)
+        return cliente
+
+    def lista_clienti(self):
+        return self.clienti
+
+3) VIEW
+
+import flet as ft
+
+class ClientiView:
+    def __init__(self, page: ft.Page):
+        self.page = page
+        self.page.title = "Gestione Clienti"
+        self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        self._controller = None
+        self._page.update()
+
+
+    def carica_interfaccia(self):
+
+    aggiungo i parametri
+     #cliente (nome, email, categoria)
+        self._txtInNomeCiente = ft.TextField(label="Nome Cliente", width=200)  # label crea il riquadro
+        self._txtInEmail = ft.TextField(label="email", width=200)
+        self._txtInCategoria = ft.TextField(label="Categoria", width=200)
+        # mettiamo tutti in una riga
+        row2 = ft.Row(controls=[self._txtInNomeCiente, self._txtInEmail, self._txtInCategoria],
+                      alignment=ft.MainAxisAlignment.CENTER, )
+
+     AGGIUNGO I BOTTONI
+        self._btnStampaInfo = ft.ElevatedButton( text="Stampa sommario",
+                                          on_click = self._controller.stampa_sommario, -> associo la funzione di controller
+                                          width=200
+                                          )
+             #blocco di testo
+        self._lvOut = ft.ListView( expand= True)
+        self._page.add(row1,row2, row3, self._lvOut)
+
+    def set_controller(self,c):
+        self._controller = c
+
+
+    def update_page(self):
+        self._page.update()
+
+
+4) CONTROLLER
+
+import flet as ft
+
+class Controller:
+
+    def __init__(self, v):
+        self._view= v
+        self._model= GestoreOrdini() # il mio model
+
+    def aggiungi_cliente(self, e):
+        aggiungo value al txt del view
+        devo aggiungere come argomento (self, e) -> e è l'evento scatenante dal pulsante
+
+
+        #Cliente
+        nomeC = self._view._txtInNomeCiente.value
+        if nomeC == "":
+            self._view._lvOut.controls.append(
+                ft.Text("inserire un nome valido", color="red")
+            )
+            self._view._update_page()
+            return
+
+        email= self._view._txtInEmail.value
+        if email == "":
+            self._view._lvOut.controls.append(
+                ft.Text("inserire una email valida", color="red")
+            )
+            self._view._update_page()
+            return
+
+        categoria= self._view._txtInCategoria.value
+        if categoria == "":
+            self._view._lvOut.controls.append(
+                ft.Text("inserire una categoria valida", color="red")
+            )
+            self._view._update_page()
+            return
+
+        ordine= self._model.crea_ordine(nomePstr, prezzo, quantita,
+                                        nomeC,email,categoria)
+
+        self._model.add_ordine(ordine)
+
+        #puliamo interfaccia dopo averlo utilizzato
+
+        self._view._txtInNomeCiente.value = ""
+        self._view._txtInEmail.value = ""
+        self._view._txtInCategoria.value = ""
+
+        self._view._lvOut.controls.append(
+            ft.Text("ordine aggiunto correttamente", color= "green")
+        )
+        self._view._lvOut.controls.append(
+            ft.Text("dettagli ordine:")
+        )
+        self._view._lvOut.controls.append(
+            ft.Text(ordine.riepilogo(), color= "blue")
+        )
+        self._view.update_page()
+
+
+
+5) MAIN
+
+sempre uguale
+import flet as ft
+
+from gestionale.controller import Controller
+from UI.view import View
+
+
+def main(page: ft.Page): #dobbiamo crrea un oggetto di tipo controllr e view
+    v = View(page) #passa la pagine dove scrivere le cose
+    c = Controller(v)
+    v.set_controller(c) # contrella controller a view
+    v.carica_interfaccia() # metodo della view
+
+
+
+ft.app(target = main)
+
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+    DATABASE
+
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+import mysql.connector
+
+from gestionale.core.cliente import ClienteRecord
+
+
+class DAO:
+--------------REGISTIAMO
+        def getAllClienti(self):
+        # connection
+        cnx = mysql.connector.connect(
+            user="root",
+            password="rootroot",
+            host="localhost",
+            database="sw_gestionale",
+        )
+        cursor = cnx.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM clienti")
+        row = cursor.fetchall()  # lista dizionari- righe che leggeiamo
+
+        # creiamo degli oggetti di tipo Prodotto
+        res = []
+        for c in row:
+            res.append(ClienteRecord(c["nome"], c["mail"], c["categoria"]))  # p["nome"] è il nome che abbiamo associaaoto al databare
+        cursor.close()
+        cnx.close()
+        return res
+
+-----------  AGGIUNIGAMO
+         def addCliente(self, prodotto):
+        cnx = mysql.connector.connect(
+            user="root",
+            password="rootroot",
+            host="localhost",
+            database="sw_gestionale",
+        )
+        cursor = cnx.cursor()
+        query = "INSERT INTO cliente (nome, mail, categoria) VALUES (%s, %s, %)"
+        cursor.execute(query, (cliente["nome"], cliente["mail"], cliente["categoria"]))
+        cnx.commit()
+        cursor.close()
+        cnx.close()
+        return
+
+

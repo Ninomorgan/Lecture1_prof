@@ -145,6 +145,8 @@ class GestoreOrdini:
         for cat, fatt in self.get_distribuzione_categoria():
             riepilogo+=(f"\nCategoria: {cat} fatturato: {fatt}")
         return riepilogo
+
+
 def test_modulo():
     sistema= GestoreOrdini()
 

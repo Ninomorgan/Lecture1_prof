@@ -14,6 +14,6 @@ def main(page: ft.Page): #dobbiamo crrea un oggetto di tipo controllr e view
     v.set_controller(c) # contrella controller a view
     v.carica_interfaccia() # metodo della view
 
-    pass
+
 
 ft.app(target = main)
