@@ -6,7 +6,10 @@ from gestionale.vendite.provaCollections import cliente
 
 
 class DAO:
+    #fdobbimao mettere staticmethod così che nel modello non devo creare istanza del dao ma uso direttamente i suoi funzioni
+    #abbiamo centralizzato il dbconnector
 
+    @staticmethod
     def getAllProdotti(self):
         #connection
         cnx= mysql.connector.connect(
@@ -16,7 +19,9 @@ class DAO:
             database = "sw_gestionale",
         )
         cursor = cnx.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM prodotti")
+
+        cursor.execute("SELECT * FROM prodotti") #CAMBIA SOLO QUESTO NEI METODI
+
         row= cursor.fetchall() #lista dizionari- righe che leggeiamo
 
         #creiamo degli oggetti di tipo Prodotto
@@ -27,6 +32,7 @@ class DAO:
         cnx.close()
         return res
 
+    @staticmethod
     def getAllClienti(self):
         # connection
         cnx = mysql.connector.connect(
@@ -49,6 +55,7 @@ class DAO:
 
 
     #AGGIUNGIAMO
+    @staticmethod
     def _addProdotto(self, prodotto):
         cnx = mysql.connector.connect(
             user="root",
@@ -64,6 +71,7 @@ class DAO:
         cnx.close()
         return
 
+    @staticmethod
     def addCliente(self, prodotto):
         cnx = mysql.connector.connect(
             user="root",

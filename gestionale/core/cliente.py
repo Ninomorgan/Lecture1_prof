@@ -11,7 +11,7 @@ class ClienteRecord:
         return hash(self.mail) #chiave primaria
 
     def __eq__(self, other):
-        self.mail==other.mail
+       return self.mail==other.mail #compare
 
     def __str__(self):
-        return f'{self.nome} -- {self.categoria}'
+        return f'{self.nome} -- {self.categoria}' #tostring
